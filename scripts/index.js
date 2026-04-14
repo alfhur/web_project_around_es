@@ -1,4 +1,24 @@
 console.log("Script index.js conectado.");
+
+// Selección de elementos DOM de la visualización de perfil
+const profileSection = document.querySelector(".profile");
+const profileEditButton = profileSection.querySelector(".profile__edit-button");
+const profileAddButton = profileSection.querySelector(".profile__add-button");
+const profileTitle = profileSection.querySelector(".profile__title");
+const profileDescription = profileSection.querySelector(
+  ".profile__description",
+);
+
+// Selección de elementos DOM del popup de edición de perfil
+const editSection = document.querySelector("#edit-popup");
+const editCloseButton = editSection.querySelector(".popup__close");
+const editForm = editSection.querySelector(".popup__form");
+const editSubmitButton = editForm.querySelector(".popup__submit-button");
+const editNameInput = editForm.querySelector(".popup__input_type_name");
+const editDescriptionInput = editForm.querySelector(
+  ".popup__input_type_description",
+);
+
 let initialCards = [
   {
     name: "Valle de Yosemite",
@@ -29,3 +49,55 @@ let initialCards = [
 initialCards.forEach(function (card) {
   console.log("Card name: " + card.name + ", Card link: " + card.link);
 });
+
+function openModal(form) {
+  console.log("Abriendo modal.");
+  form.classList.add("popup_is-opened");
+}
+
+function closeModal(form) {
+  console.log("Cerrando modal.");
+  form.classList.remove("popup_is-opened");
+}
+
+/**************************************************************************
+ * Funciones y eventos para la sección profile
+ *************************************************************************/
+
+profileEditButton.addEventListener("click", function () {
+  console.log("Abriendo popup de edición de perfil.");
+  handleOpenEditModal();
+});
+
+/**************************************************************************
+ * Funciones y eventos para el popup de edición de perfil
+ *************************************************************************/
+
+function fillProfileForm() {
+  console.log("fillProfileForm(). Cargando datos a edit-popup.");
+  editNameInput.value = profileTitle.textContent;
+  editDescriptionInput.value = profileDescription.textContent;
+}
+
+function handleProfileFormSubmit(evt) {
+  console.log("handleProfileFormSubmit(). Guardando cambios en el perfil.");
+  evt.preventDefault();
+
+  profileTitle.textContent = editNameInput.value;
+  profileDescription.textContent = editDescriptionInput.value;
+
+  closeModal(editSection);
+}
+
+function handleOpenEditModal() {
+  console.log("handleOpenEditModal(). Abriendo edit-popup.");
+  fillProfileForm();
+  openModal(editSection);
+}
+
+editCloseButton.addEventListener("click", function () {
+  console.log("Cerrando el popup de edición de perfil.");
+  closeModal(editSection);
+});
+
+editForm.addEventListener("submit", handleProfileFormSubmit);
