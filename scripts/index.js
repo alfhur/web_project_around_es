@@ -1,5 +1,11 @@
 console.log("Script index.js conectado.");
 
+// Selección de elementos DOM para la gestión de la plantilla de tarjeta
+const cardsContainer = document.querySelector(".cards__list");
+const cardTemplate = document
+  .querySelector("#card-template")
+  .content.querySelector(".card");
+
 // Selección de elementos DOM de la visualización de perfil
 const profileSection = document.querySelector(".profile");
 const profileEditButton = profileSection.querySelector(".profile__edit-button");
@@ -45,10 +51,6 @@ let initialCards = [
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
 ];
-
-initialCards.forEach(function (card) {
-  console.log("Card name: " + card.name + ", Card link: " + card.link);
-});
 
 function openModal(form) {
   console.log("Abriendo modal.");
@@ -101,3 +103,46 @@ editCloseButton.addEventListener("click", function () {
 });
 
 editForm.addEventListener("submit", handleProfileFormSubmit);
+
+/**************************************************************************
+ * Funciones y eventos para la creación de tarjetas y la forma new-card-popup
+ *************************************************************************/
+
+function getCardElement(
+  name = "Sin título",
+  link = "./images/placeholder-image.jpg",
+) {
+  console.log(
+    "getCardElement(). Creando tarjeta con nombre: " +
+      name +
+      " y link: " +
+      link,
+  );
+
+  const cardElement = cardTemplate.cloneNode(true);
+  const cardImage = cardElement.querySelector(".card__image");
+  const cardTitle = cardElement.querySelector(".card__title");
+
+  cardImage.src = link;
+  cardImage.alt = name;
+  cardTitle.textContent = name;
+
+  return cardElement;
+}
+
+function renderCard(name, link, cardContainer) {
+  console.log(
+    "renderCard(). Renderizando tarjeta con nombre: " +
+      name +
+      " y link: " +
+      link,
+  );
+
+  const newCard = getCardElement(name, link);
+  cardContainer.append(newCard);
+}
+
+initialCards.forEach(function (card) {
+  console.log("Card name: " + card.name + ", Card link: " + card.link);
+  renderCard(card.name, card.link, cardsContainer);
+});
