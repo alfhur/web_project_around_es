@@ -136,10 +136,16 @@ function getCardElement(
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
+  const cardLikeButton = cardElement.querySelector(".card__like-button");
 
   cardImage.src = link;
   cardImage.alt = name;
   cardTitle.textContent = name;
+
+  cardLikeButton.addEventListener("click", () => {
+    console.log("Click botón 'Me gusta'");
+    cardLikeButton.classList.toggle("card__like-button_is-active");
+  });
 
   return cardElement;
 }
@@ -183,4 +189,4 @@ function handleCardFormSubmit(evt) {
   const link = newLinkInput.value;
   newForm.reset();
   renderCard(name, link, cardsContainer);
-};
+}
