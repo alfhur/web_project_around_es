@@ -137,6 +137,7 @@ function getCardElement(
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
   const cardLikeButton = cardElement.querySelector(".card__like-button");
+  const cardDeleteButton = cardElement.querySelector(".card__delete-button");
 
   cardImage.src = link;
   cardImage.alt = name;
@@ -145,6 +146,11 @@ function getCardElement(
   cardLikeButton.addEventListener("click", () => {
     console.log("Click botón 'Me gusta'");
     cardLikeButton.classList.toggle("card__like-button_is-active");
+  });
+
+  cardDeleteButton.addEventListener("click", () => {
+    console.log("Click botón 'Eliminar'");
+    cardElement.remove();
   });
 
   return cardElement;
