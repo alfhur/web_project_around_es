@@ -6,25 +6,33 @@ const cardTemplate = document
   .querySelector("#card-template")
   .content.querySelector(".card");
 
-// Selección de elementos DOM de la visualización de perfil
+// Selección de elementos DOM relacionados con la visualización del perfil
 const profileSection = document.querySelector(".profile");
-const profileEditButton = profileSection.querySelector(".profile__edit-button");
 const profileAddButton = profileSection.querySelector(".profile__add-button");
+const profileEditButton = profileSection.querySelector(".profile__edit-button");
 const profileTitle = profileSection.querySelector(".profile__title");
 const profileDescription = profileSection.querySelector(
   ".profile__description",
 );
 
-// Selección de elementos DOM del popup de edición de perfil
+// Selección de elementos DOM del popup edición de perfil
 const editSection = document.querySelector("#edit-popup");
-const editCloseButton = editSection.querySelector(".popup__close");
 const editForm = editSection.querySelector(".popup__form");
-const editSubmitButton = editForm.querySelector(".popup__submit-button");
+const editCloseButton = editSection.querySelector(".popup__close");
+//const editSubmitButton = editForm.querySelector(".popup__submit-button");
 const editNameInput = editForm.querySelector(".popup__input_type_name");
 const editDescriptionInput = editForm.querySelector(
   ".popup__input_type_description",
 );
 
+// Selección de elementos DOM del popup nueva de tarjeta
+const newSection = document.querySelector("#new-card-popup");
+const newForm = newSection.querySelector(".popup__form");
+const newCloseButton = newSection.querySelector(".popup__close");
+const newNameInput = newSection.querySelector(".popup__input_type_card-name");
+const newLinkInput = newSection.querySelector(".popup__input_type_url");
+
+/*
 let initialCards = [
   {
     name: "Valle de Yosemite",
@@ -51,6 +59,7 @@ let initialCards = [
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
 ];
+*/
 
 function openModal(form) {
   console.log("Abriendo modal.");
@@ -69,6 +78,11 @@ function closeModal(form) {
 profileEditButton.addEventListener("click", function () {
   console.log("Abriendo popup de edición de perfil.");
   handleOpenEditModal();
+});
+
+profileAddButton.addEventListener("click", function () {
+  console.log("Abriendo popup de creación de tarjeta.");
+  openModal(newSection);
 });
 
 /**************************************************************************
@@ -105,7 +119,7 @@ editCloseButton.addEventListener("click", function () {
 editForm.addEventListener("submit", handleProfileFormSubmit);
 
 /**************************************************************************
- * Funciones y eventos para la creación de tarjetas y la forma new-card-popup
+ * Funciones para la creación y renderizado de tarjetas
  *************************************************************************/
 
 function getCardElement(
@@ -139,10 +153,34 @@ function renderCard(name, link, cardContainer) {
   );
 
   const newCard = getCardElement(name, link);
-  cardContainer.append(newCard);
+  //cardContainer.append(newCard);
+  cardContainer.prepend(newCard);
 }
 
+/*
 initialCards.forEach(function (card) {
   console.log("Card name: " + card.name + ", Card link: " + card.link);
   renderCard(card.name, card.link, cardsContainer);
 });
+*/
+
+/**************************************************************************
+ * Funciones para la creación de tarjetas a través del popup de creación de tarjeta
+ *************************************************************************/
+
+newCloseButton.addEventListener("click", function () {
+  console.log("Cerrando el popup de creación de tarjeta.");
+  closeModal(newSection);
+});
+
+newForm.addEventListener("submit", handleCardFormSubmit);
+
+function handleCardFormSubmit(evt) {
+  console.log("handleCardFormSubmit(). Guardando nueva tarjeta.");
+  evt.preventDefault();
+  closeModal(newSection);
+  const name = newNameInput.value;
+  const link = newLinkInput.value;
+  newForm.reset();
+  renderCard(name, link, cardsContainer);
+};
