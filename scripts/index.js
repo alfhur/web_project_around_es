@@ -18,18 +18,20 @@ const profileDescription = profileSection.querySelector(
 // Selección de elementos DOM del popup edición de perfil
 const editSection = document.querySelector("#edit-popup");
 const editForm = editSection.querySelector(".popup__form");
+const editFormInputs = editSection.querySelectorAll(".popup__input");
 const editCloseButton = editSection.querySelector(".popup__close");
 const editSubmitButton = editForm.querySelector(".popup__button");
 const editNameInput = editForm.querySelector(".popup__input_type_name");
 const editDescriptionInput = editForm.querySelector(
   ".popup__input_type_description",
 );
-const editInputs = editSection.querySelectorAll(".popup__input");
 
 // Selección de elementos DOM del popup nueva de tarjeta
 const newSection = document.querySelector("#new-card-popup");
 const newForm = newSection.querySelector(".popup__form");
+const newFormInputs = newSection.querySelectorAll(".popup__input");
 const newCloseButton = newSection.querySelector(".popup__close");
+const newSubmitButton = newSection.querySelector(".popup__button");
 const newNameInput = newSection.querySelector(".popup__input_type_card-name");
 const newLinkInput = newSection.querySelector(".popup__input_type_url");
 
@@ -187,16 +189,8 @@ editForm.addEventListener("submit", handleProfileFormSubmit);
  * Funciones para la creación y renderizado de tarjetas
  *************************************************************************/
 
-function getCardElement(
-  name = "Sin título",
-  link = "./images/placeholder-image.jpg",
-) {
-  console.log(
-    "getCardElement(). Creando tarjeta con nombre: " +
-      name +
-      " y link: " +
-      link,
-  );
+function getCardElement(name, link) {
+  console.log("getCardElement(). Creando tarjeta: " + name);
 
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector(".card__image");
@@ -288,7 +282,7 @@ console.log("edit-profile-form: Cargar listeners a inputs");
 
 // CÓDIGO ORIGNAL (BASADO EN LA LECCIÓN)
 /*
-editInputs.forEach(function (input) {
+editFormInputs.forEach(function (input) {
   input.addEventListener("input", (input) => {
     console.log("Validando input: " + input.name);
     if (input.checkValidity) {
@@ -302,7 +296,7 @@ editInputs.forEach(function (input) {
 
 /*
 // Unexpected token 
-editInputs.forEach(function (input.currentTarget) {
+editFormInputs.forEach(function (input.currentTarget) {
   input.addEventListener("input", (input) => {
     console.log("Validando input: " + input.name);
     if (input.checkValidity) {
@@ -315,7 +309,7 @@ editInputs.forEach(function (input.currentTarget) {
 */
 
 /*
-editInputs.forEach(function (input) {
+editFormInputs.forEach(function (input) {
   input.addEventListener("input", (inputX) => {
     const input = inputX.currentTarget;
 
@@ -337,4 +331,5 @@ editInputs.forEach(function (input) {
   });
 });
 */
-addPopupValidationListeners(editInputs, editSubmitButton);
+addPopupValidationListeners(editFormInputs, editSubmitButton);
+addPopupValidationListeners(newFormInputs, newSubmitButton);
