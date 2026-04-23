@@ -19,11 +19,12 @@ const profileDescription = profileSection.querySelector(
 const editSection = document.querySelector("#edit-popup");
 const editForm = editSection.querySelector(".popup__form");
 const editCloseButton = editSection.querySelector(".popup__close");
-//const editSubmitButton = editForm.querySelector(".popup__submit-button");
+const editSubmitButton = editForm.querySelector(".popup__button");
 const editNameInput = editForm.querySelector(".popup__input_type_name");
 const editDescriptionInput = editForm.querySelector(
   ".popup__input_type_description",
 );
+const editInputs = editSection.querySelectorAll(".popup__input");
 
 // Selección de elementos DOM del popup nueva de tarjeta
 const newSection = document.querySelector("#new-card-popup");
@@ -65,6 +66,10 @@ let initialCards = [
   },
 ];
 
+/**************************************************************************
+ * Funciones generales: abrir/cerrar popups (ventans modales)
+ *************************************************************************/
+
 function openModal(form) {
   console.log("openModal().Abriendo modal.");
   form.classList.add("popup_is-opened");
@@ -73,6 +78,62 @@ function openModal(form) {
 function closeModal(form) {
   console.log("closeModal(). Cerrando modal.");
   form.classList.remove("popup_is-opened");
+}
+
+function toggleButtonState(inputs, button) {
+  const allValid = Array.from(inputs).every((input) => input.validity.valid);
+  button.disabled = !allValid;
+}
+
+/**************************************************************************
+ * Funciones generales: validación de datos de entrada
+ *  - Verificar si un input o formulario es válido
+ *  - Mostrar/ocultar mensajes de error a los inputs
+ *************************************************************************/
+
+function getInputTypeErrID(inputElement) {
+  // Con el atributo "name" del input, se crea
+  // el nombre de clase asignada a su correspondiente
+  // elemento SPAN de mensaje de error
+  return `.${inputElement.name}-input-error`;
+}
+
+function showInputError(inputElement, errorMessage) {
+  const spanInputErrorID = getInputTypeErrID(inputElement);
+  const errorSpan = document.querySelector(spanInputErrorID);
+  inputElement.classList.add("popup__input_type_error");
+  errorSpan.textContent = errorMessage;
+  errorSpan.classList.add("popup__input-error_active");
+}
+
+function hideInputError(inputElement) {
+  const spanInputErrorID = getInputTypeErrID(inputElement);
+  const errorSpan = document.querySelector(spanInputErrorID);
+  inputElement.classList.remove("popup__input_type_error");
+  errorSpan.textContent = "";
+  errorSpan.classList.remove("popup__input-error_active");
+}
+
+function addPopupValidationListeners(inputElements, submitButton) {
+  inputElements.forEach(function (input) {
+    input.addEventListener("input", (inputX) => {
+      const input = inputX.currentTarget;
+
+      // Se activa/desactiva el butón submit
+      toggleButtonState(inputElements, submitButton);
+
+      // Se valida el input y se muestra/oculta su mensaje de error
+      if (input.validity.valid) {
+        let logMsg = `Validando input: ${input.name} -> OK: ocultar mensaje error.`;
+        console.log(logMsg);
+        hideInputError(input);
+      } else {
+        let logMsg = `Validando input: ${input.name} -> Error: mostrar mensaje error.`;
+        console.log(logMsg);
+        showInputError(input, input.validationMessage);
+      }
+    }); // input.addEventListener
+  }); // inputElements.forEach
 }
 
 /**************************************************************************
@@ -181,11 +242,6 @@ function renderCard(name, link, cardContainer) {
   cardContainer.prepend(newCard);
 }
 
-initialCards.forEach(function (card) {
-  console.log("Card name: " + card.name + ", Card link: " + card.link);
-  renderCard(card.name, card.link, cardsContainer);
-});
-
 /**************************************************************************
  * Funciones para la creación de tarjetas a través del popup de creación de tarjeta
  *************************************************************************/
@@ -215,3 +271,70 @@ imageCloseButton.addEventListener("click", function () {
   console.log("Cerrando el popup de consulta de tarjeta.");
   closeModal(imageSection);
 });
+
+/**************************************************************************
+ * Inicializar página
+ *************************************************************************/
+
+// Crear dinámicamente las tarjetas a mostrar a partir de los datos
+// en el array initialCards
+initialCards.forEach(function (card) {
+  console.log("Card name: " + card.name + ", Card link: " + card.link);
+  renderCard(card.name, card.link, cardsContainer);
+});
+
+// edit-profile-form: Inicializar (cargar) eventos de valización a los campos de captura
+console.log("edit-profile-form: Cargar listeners a inputs");
+
+// CÓDIGO ORIGNAL (BASADO EN LA LECCIÓN)
+/*
+editInputs.forEach(function (input) {
+  input.addEventListener("input", (input) => {
+    console.log("Validando input: " + input.name);
+    if (input.checkValidity) {
+      hideInputError(input);
+    } else {
+      showInputError(input, input.validationMessage);
+    }
+  });
+});
+*/
+
+/*
+// Unexpected token 
+editInputs.forEach(function (input.currentTarget) {
+  input.addEventListener("input", (input) => {
+    console.log("Validando input: " + input.name);
+    if (input.checkValidity) {
+      hideInputError(input);
+    } else {
+      showInputError(input, input.validationMessage);
+    }
+  });
+});
+*/
+
+/*
+editInputs.forEach(function (input) {
+  input.addEventListener("input", (inputX) => {
+    const input = inputX.currentTarget;
+
+    editSaveButton.disabled = true;
+
+    if (input.validity.valid) {
+      console.log(
+        "Validando input: " + input.name + " -> OK. ocultar mensaje de error.",
+      );
+      hideInputError(input);
+    } else {
+      console.log(
+        "Validando input: " +
+          input.name +
+          " -> Error: mostrar mensaje de error.",
+      );
+      showInputError(input, input.validationMessage);
+    }
+  });
+});
+*/
+addPopupValidationListeners(editInputs, editSubmitButton);
