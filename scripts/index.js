@@ -1,17 +1,19 @@
 console.log("Script index.js conectado.");
 
 // Declaraciones de clases CSS
-const CSS_POPUP_ELEMENT = "popup";
-const CSS_OPEN_POPUP = "popup_is-opened";
+const CSS_POPUP_DIV = "popup";
+const CSS_POPUP_FORM = "popup__form";
+const CSS_DISPLAY_POPUP = "popup_is-opened";
+const CSS_CLOSE_BUTTON = "popup__close";
 const CSS_SUBMIT_BUTTON = "popup__button";
 const CSS_INPUT_ELEMENT = "popup__input";
 const CSS_INPUT_ERR_ELEMENT = "popup__input-error";
-const CSS_INPUT_NAME_ERR_SUFIX = "-input-error";
+const CSS_INPUT_ERR_SUFIX = "-input-error";
 const CSS_HIGHLIGHT_INVALID_INPUT = "popup__input_type_error";
-const CSS_SHOW_VALIDATION_MSG = "popup__input-error_active";
+const CSS_DISPLAY_VALIDATION_MSG = "popup__input-error_active";
 
 // Selección de elementos DOM
-const popups = document.querySelectorAll(`.${CSS_POPUP_ELEMENT}`);
+const popups = document.querySelectorAll(`.${CSS_POPUP_DIV}`);
 
 // Selección de elementos DOM para la gestión de la plantilla de tarjeta
 const cardsContainer = document.querySelector(".cards__list");
@@ -30,10 +32,7 @@ const profileDescription = profileSection.querySelector(
 
 // Selección de elementos DOM del popup edición de perfil
 const editSection = document.querySelector("#edit-popup");
-const editForm = editSection.querySelector(".popup__form");
-const editFormInputs = editSection.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
-const editCloseButton = editSection.querySelector(".popup__close");
-const editSubmitButton = editForm.querySelector(`.${CSS_SUBMIT_BUTTON}`);
+const editForm = editSection.querySelector(`.${CSS_POPUP_FORM}`);
 const editNameInput = editForm.querySelector(".popup__input_type_name");
 const editDescriptionInput = editForm.querySelector(
   ".popup__input_type_description",
@@ -41,16 +40,12 @@ const editDescriptionInput = editForm.querySelector(
 
 // Selección de elementos DOM del popup nueva de tarjeta
 const newSection = document.querySelector("#new-card-popup");
-const newForm = newSection.querySelector(".popup__form");
-const newFormInputs = newSection.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
-const newCloseButton = newSection.querySelector(".popup__close");
-const newSubmitButton = newSection.querySelector(".popup__button");
+const newForm = newSection.querySelector(`.${CSS_POPUP_FORM}`);
 const newNameInput = newSection.querySelector(".popup__input_type_card-name");
 const newLinkInput = newSection.querySelector(".popup__input_type_url");
 
 // Selección de elementos DOM del popup ver imágen ampliada
 const imageSection = document.querySelector("#image-popup");
-const imageCloseButton = imageSection.querySelector(".popup__close");
 const imageName = imageSection.querySelector(".popup__caption");
 const imageElement = imageSection.querySelector(".popup__image");
 
@@ -82,6 +77,19 @@ let initialCards = [
 ];
 
 /**************************************************************************
+ * Funciones generales: sin categoría
+ *************************************************************************/
+
+function loadCards() {
+  // Crea dinámicamente las tarjetas a mostrar a partir
+  // de los datos en el array initialCards
+  initialCards.forEach(function (card) {
+    console.log("Card name: " + card.name + ", Card link: " + card.link);
+    renderCard(card.name, card.link, cardsContainer);
+  });
+}
+
+/**************************************************************************
  * Funciones generales: abrir/cerrar popups (ventans modales)
  *************************************************************************/
 
@@ -90,22 +98,26 @@ function toggleButtonState(inputs, button) {
   button.disabled = !allValid;
 }
 
-function resetModal(form) {
+function resetModal(popup) {
   /*
   Se inicializa el estado de la forma en preparación para abrirse
   */
 
   // Se limpian inputs y mensajes de validación cotenidos en la forma
-  const formInputs = form.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
-  formInputs.forEach((input) => {
-    input.value = "";
-    hideInputError(input);
-  });
+  const formInputs = popup.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
 
-  // Se desativa el boton submit
-  const submitButton = form.querySelector(`.${CSS_SUBMIT_BUTTON}`);
-  toggleButtonState(formInputs, submitButton);
-  // Talvez sólo era necesario ejecutar submitButton.disabled directamente
+  if (formInputs.length > 0) {
+    // Se desativa el boton submit
+    const submitButton = popup.querySelector(`.${CSS_SUBMIT_BUTTON}`);
+    //toggleButtonState(formInputs, submitButton);
+    submitButton.disabled = true;
+
+    // Se inicializan inputs y se limpian mensajes de validación
+    formInputs.forEach((input) => {
+      input.value = "";
+      hideInputError(input);
+    });
+  }
 }
 
 function handleModalKeys(evt) {
@@ -113,8 +125,8 @@ function handleModalKeys(evt) {
  Paso 4. Cerrar la ventana emergente pulsando Esc
  */
   if (evt.key === "Escape") {
-    // Recuperamos el popup (forma) abierta (la visible con la clase "popup_is-opened")
-    const openedForm = document.querySelector(`.${CSS_OPEN_POPUP}`);
+    // Recuperamos el popup (forma) abierto (la visible con la clase "popup_is-opened")
+    const openedForm = document.querySelector(`.${CSS_DISPLAY_POPUP}`);
     if (openedForm) {
       closeModal(openedForm);
     }
@@ -140,72 +152,37 @@ function handleModalClick(evt) {
   }
 }
 
-function addModalListeners() {
-  /*
-  Cargar a todas las ventanas emergentes (popups) los
-  listeners necesarios para su funcionamiento:
-
-    * Clic del mouse para cerrar la venta en cualquier area.
-  */
-  popups.forEach((popup) => {
-    // Cerrar con clic con overlay
-    popup.addEventListener("click", handleModalClick);
-  });
-}
-
-function openModal(form) {
-  console.log("openModal().Abriendo modal.");
+function openModal(popup) {
+  console.log("openModal(). Abriendo modal.");
 
   // Se agrega listener para cerrar el popup con la tecla Esc
   document.addEventListener("keydown", handleModalKeys);
 
-  // Se inicializa/prepara el popup para mostrarse
-  resetModal(form);
-
   // Se muestra el popup
-  form.classList.add(CSS_OPEN_POPUP);
+  popup.classList.add(CSS_DISPLAY_POPUP);
+
+  // Se limpia la forma
+  resetModal(popup);
 }
 
-function closeModal(form) {
+function closeModal(popup) {
   console.log("closeModal(). Cerrando modal.");
 
   // Se cierra (oculta) el popup
-  form.classList.remove(CSS_OPEN_POPUP);
+  popup.classList.remove(CSS_DISPLAY_POPUP);
 
   // Se elimina listener para cerrar el popup con la tecla Esc
   document.removeEventListener("keydown", handleModalKeys);
+
+  // Se limpia la forma, si la sección tiene una
+  const form = popup.querySelector(`.${CSS_POPUP_FORM}`);
+  if (form) {
+    form.reset(); // No funciona
+    form.checkValidity();
+  }
 }
 
-/**************************************************************************
- * Funciones generales: validación de datos de entrada
- *  - Verificar si un input o formulario es válido
- *  - Mostrar/ocultar mensajes de error a los inputs
- *************************************************************************/
-
-function getInputTypeErrID(inputElement) {
-  // Con el atributo "name" del input, se crea
-  // el nombre de clase asignada a su correspondiente
-  // elemento SPAN de mensaje de error
-  return `.${inputElement.name}${CSS_INPUT_NAME_ERR_SUFIX}`;
-}
-
-function showInputError(inputElement, errorMessage) {
-  const spanInputErrorID = getInputTypeErrID(inputElement);
-  const errorSpan = document.querySelector(spanInputErrorID);
-  inputElement.classList.add(CSS_HIGHLIGHT_INVALID_INPUT);
-  errorSpan.textContent = errorMessage;
-  errorSpan.classList.add(CSS_SHOW_VALIDATION_MSG);
-}
-
-function hideInputError(inputElement) {
-  const spanInputErrorID = getInputTypeErrID(inputElement);
-  const errorSpan = document.querySelector(spanInputErrorID);
-  inputElement.classList.remove(CSS_HIGHLIGHT_INVALID_INPUT);
-  errorSpan.textContent = "";
-  errorSpan.classList.remove(CSS_SHOW_VALIDATION_MSG);
-}
-
-function addPopupValidationListeners(inputElements, submitButton) {
+function addModalValidationListeners(inputElements, submitButton) {
   inputElements.forEach(function (input) {
     input.addEventListener("input", () => {
       // Se activa/desactiva el butón submit
@@ -223,6 +200,79 @@ function addPopupValidationListeners(inputElements, submitButton) {
       }
     }); // input.addEventListener
   }); // inputElements.forEach
+}
+
+function initModals() {
+  /*
+  Carga a todas las ventanas emergentes (popups) los
+  listeners necesarios para su funcionamiento:
+
+    * Clic del mouse para cerrar el popup en cualquier area.
+    * Clic al boton X para cerrar el popup.
+    * Validar inputs y activar/desactivar butón submit.
+  */
+
+  console.log("initModals(). Inicia.");
+
+  popups.forEach((popup) => {
+    console.log(`  Configurando popup ${popup.id}`);
+
+    // Cerrar con clic con overlay
+    console.log(`  Agregando listener cerrar con clic: handleModalClick()`);
+    popup.addEventListener("click", handleModalClick);
+
+    // Cerrar con botón X
+    console.log(`  Agregando listener cerrar con boton: callback anónimo`);
+    const closeButton = popup.querySelector(`.${CSS_CLOSE_BUTTON}`);
+    closeButton.addEventListener("click", function () {
+      console.log("Cerrando popup.");
+      closeModal(popup);
+    });
+
+    // Validación de los campos del formulario
+    const inputs = popup.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
+    const submitButton = popup.querySelector(`.${CSS_SUBMIT_BUTTON}`);
+    if (inputs.length > 0) {
+      console.log(`  Agregando listener validar captura de datos`);
+      addModalValidationListeners(inputs, submitButton);
+    } else {
+      console.log(`  Popup de consulta (sin captura de datos)`);
+    }
+  });
+
+  console.log("initModals(). Termina.");
+}
+
+/**************************************************************************
+ * Funciones generales: validación de datos de entrada
+ *  - Verificar si un input o formulario es válido
+ *  - Mostrar/ocultar mensajes de error a los inputs
+ *************************************************************************/
+
+function getInputTypeErrID(inputElement) {
+  // Regresa el nombre de la clase CSS que identifca
+  // de manera unívoca al SPAN asociado a un INPUT
+  // para mostrar sus mensajes de error/validación.
+  //
+  // Con el atributo "name" del INPUT, se crea
+  // el nombre de clase CSS asignada al SPAN.
+  return `.${inputElement.name}${CSS_INPUT_ERR_SUFIX}`;
+}
+
+function showInputError(inputElement, validationMessage) {
+  const spanInputErrorID = getInputTypeErrID(inputElement);
+  const errorSpan = document.querySelector(spanInputErrorID);
+  inputElement.classList.add(CSS_HIGHLIGHT_INVALID_INPUT);
+  errorSpan.textContent = validationMessage;
+  errorSpan.classList.add(CSS_DISPLAY_VALIDATION_MSG);
+}
+
+function hideInputError(inputElement) {
+  const spanInputErrorID = getInputTypeErrID(inputElement);
+  const errorSpan = document.querySelector(spanInputErrorID);
+  inputElement.classList.remove(CSS_HIGHLIGHT_INVALID_INPUT);
+  errorSpan.textContent = "";
+  errorSpan.classList.remove(CSS_DISPLAY_VALIDATION_MSG);
 }
 
 /**************************************************************************
@@ -257,6 +307,7 @@ function handleProfileFormSubmit(evt) {
   profileDescription.textContent = editDescriptionInput.value;
 
   closeModal(editSection);
+  //editForm.reset();
 }
 
 function handleOpenEditModal() {
@@ -264,11 +315,6 @@ function handleOpenEditModal() {
   fillProfileForm();
   openModal(editSection);
 }
-
-editCloseButton.addEventListener("click", function () {
-  console.log("Cerrando el popup de edición de perfil.");
-  closeModal(editSection);
-});
 
 editForm.addEventListener("submit", handleProfileFormSubmit);
 
@@ -319,7 +365,6 @@ function renderCard(name, link, cardContainer) {
   );
 
   const newCard = getCardElement(name, link);
-  //cardContainer.append(newCard);
   cardContainer.prepend(newCard);
 }
 
@@ -327,46 +372,28 @@ function renderCard(name, link, cardContainer) {
  * Funciones para la creación de tarjetas a través del popup de creación de tarjeta
  *************************************************************************/
 
-newCloseButton.addEventListener("click", function () {
-  console.log("Cerrando el popup de creación de tarjeta.");
-  closeModal(newSection);
-});
-
-newForm.addEventListener("submit", handleCardFormSubmit);
-
 function handleCardFormSubmit(evt) {
   console.log("handleCardFormSubmit(). Guardando nueva tarjeta.");
   evt.preventDefault();
   closeModal(newSection);
   const name = newNameInput.value;
   const link = newLinkInput.value;
-  newForm.reset();
+  //newForm.reset();
   renderCard(name, link, cardsContainer);
 }
+
+newForm.addEventListener("submit", handleCardFormSubmit);
 
 /**************************************************************************
  * Funciones para vista de una tarjeta específica en el popup de imagen ampliada
  *************************************************************************/
 
-imageCloseButton.addEventListener("click", function () {
-  console.log("Cerrando el popup de consulta de tarjeta.");
-  closeModal(imageSection);
-});
-
 /**************************************************************************
  * Código para la inicialización de la página
  *************************************************************************/
 
-// Crear dinámicamente las tarjetas a mostrar a partir de los datos
-// en el array initialCards
-initialCards.forEach(function (card) {
-  console.log("Card name: " + card.name + ", Card link: " + card.link);
-  renderCard(card.name, card.link, cardsContainer);
-});
+// Crear y mostrar las tarjetas iniciales
+loadCards();
 
-// edit-profile-form: Inicializar (cargar) eventos de valización a los campos de captura
-console.log("edit-profile-form: Cargar listeners a inputs");
-
-addPopupValidationListeners(editFormInputs, editSubmitButton);
-addPopupValidationListeners(newFormInputs, newSubmitButton);
-addModalListeners();
+// Inicializar las ventanas modales
+initModals();
