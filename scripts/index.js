@@ -1,7 +1,17 @@
 console.log("Script index.js conectado.");
 
-const popups = document.querySelectorAll(".popup");
-const openPopupClass = "popup_is-opened";
+// Declaraciones de clases CSS
+const CSS_POPUP_ELEMENT = "popup";
+const CSS_OPEN_POPUP = "popup_is-opened";
+const CSS_SUBMIT_BUTTON = "popup__button";
+const CSS_INPUT_ELEMENT = "popup__input";
+const CSS_INPUT_ERR_ELEMENT = "popup__input-error";
+const CSS_INPUT_NAME_ERR_SUFIX = "-input-error";
+const CSS_HIGHLIGHT_INVALID_INPUT = "popup__input_type_error";
+const CSS_SHOW_VALIDATION_MSG = "popup__input-error_active";
+
+// Selección de elementos DOM
+const popups = document.querySelectorAll(`.${CSS_POPUP_ELEMENT}`);
 
 // Selección de elementos DOM para la gestión de la plantilla de tarjeta
 const cardsContainer = document.querySelector(".cards__list");
@@ -21,9 +31,9 @@ const profileDescription = profileSection.querySelector(
 // Selección de elementos DOM del popup edición de perfil
 const editSection = document.querySelector("#edit-popup");
 const editForm = editSection.querySelector(".popup__form");
-const editFormInputs = editSection.querySelectorAll(".popup__input");
+const editFormInputs = editSection.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
 const editCloseButton = editSection.querySelector(".popup__close");
-const editSubmitButton = editForm.querySelector(".popup__button");
+const editSubmitButton = editForm.querySelector(`.${CSS_SUBMIT_BUTTON}`);
 const editNameInput = editForm.querySelector(".popup__input_type_name");
 const editDescriptionInput = editForm.querySelector(
   ".popup__input_type_description",
@@ -32,7 +42,7 @@ const editDescriptionInput = editForm.querySelector(
 // Selección de elementos DOM del popup nueva de tarjeta
 const newSection = document.querySelector("#new-card-popup");
 const newForm = newSection.querySelector(".popup__form");
-const newFormInputs = newSection.querySelectorAll(".popup__input");
+const newFormInputs = newSection.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
 const newCloseButton = newSection.querySelector(".popup__close");
 const newSubmitButton = newSection.querySelector(".popup__button");
 const newNameInput = newSection.querySelector(".popup__input_type_card-name");
@@ -80,20 +90,37 @@ function toggleButtonState(inputs, button) {
   button.disabled = !allValid;
 }
 
-function handlePopupKeys(evt) {
+function resetModal(form) {
+  /*
+  Se inicializa el estado de la forma en preparación para abrirse
+  */
+
+  // Se limpian inputs y mensajes de validación cotenidos en la forma
+  const formInputs = form.querySelectorAll(`.${CSS_INPUT_ELEMENT}`);
+  formInputs.forEach((input) => {
+    input.value = "";
+    hideInputError(input);
+  });
+
+  // Se desativa el boton submit
+  const submitButton = form.querySelector(`.${CSS_SUBMIT_BUTTON}`);
+  toggleButtonState(formInputs, submitButton);
+}
+
+function handleModalKeys(evt) {
   /*
  Paso 4. Cerrar la ventana emergente pulsando Esc
  */
   if (evt.key === "Escape") {
     // Recuperamos el popup (forma) abierta (la visible con la clase "popup_is-opened")
-    const openedForm = document.querySelector(`.${openPopupClass}`);
+    const openedForm = document.querySelector(`.${CSS_OPEN_POPUP}`);
     if (openedForm) {
       closeModal(openedForm);
     }
   }
 }
 
-function handlePopupClick(evt) {
+function handleModalClick(evt) {
   /*
   Paso 3. Cerrar la ventana emergente el hacer clic
   en la superposición
@@ -105,45 +132,47 @@ function handlePopupClick(evt) {
   Si ambos son iguales, significa que se hizo clic en
   el fonodo (overlay), no dentro del contenido.
   */
-  console.log(`handlePopupClick(). target: ${evt.target}`);
+  console.log(`handleModalClick(). target: ${evt.target}`);
   if (evt.target === evt.currentTarget) {
-    console.log(`handlePopupClick(). Cerrando popup`);
+    console.log(`handleModalClick(). Cerrando popup`);
     closeModal(evt.currentTarget);
   }
 }
 
-function addPopupsListeners() {
+function addModalListeners() {
   /*
-  Esta función se encarga de crear a todas las ventanas
-  emergentes (popups) los listeners necesarios para 
-  su funcionamiento:
+  Cargar a todas las ventanas emergentes (popups) los
+  listeners necesarios para su funcionamiento:
 
     * Clic del mouse para cerrar la venta en cualquier area.
   */
   popups.forEach((popup) => {
     // Cerrar con clic con overlay
-    popup.addEventListener("click", handlePopupClick);
+    popup.addEventListener("click", handleModalClick);
   });
 }
 
 function openModal(form) {
   console.log("openModal().Abriendo modal.");
 
-  // Se muestra el popup
-  form.classList.add(openPopupClass);
-
   // Se agrega listener para cerrar el popup con la tecla Esc
-  document.addEventListener("keydown", handlePopupKeys);
+  document.addEventListener("keydown", handleModalKeys);
+
+  // Se inicializa/prepara el popup para mostrarse
+  resetModal(form);
+
+  // Se muestra el popup
+  form.classList.add(CSS_OPEN_POPUP);
 }
 
 function closeModal(form) {
   console.log("closeModal(). Cerrando modal.");
 
   // Se cierra (oculta) el popup
-  form.classList.remove(openPopupClass);
+  form.classList.remove(CSS_OPEN_POPUP);
 
   // Se elimina listener para cerrar el popup con la tecla Esc
-  document.removeEventListener("keydown", handlePopupKeys);
+  document.removeEventListener("keydown", handleModalKeys);
 }
 
 /**************************************************************************
@@ -156,23 +185,23 @@ function getInputTypeErrID(inputElement) {
   // Con el atributo "name" del input, se crea
   // el nombre de clase asignada a su correspondiente
   // elemento SPAN de mensaje de error
-  return `.${inputElement.name}-input-error`;
+  return `.${inputElement.name}${CSS_INPUT_NAME_ERR_SUFIX}`;
 }
 
 function showInputError(inputElement, errorMessage) {
   const spanInputErrorID = getInputTypeErrID(inputElement);
   const errorSpan = document.querySelector(spanInputErrorID);
-  inputElement.classList.add("popup__input_type_error");
+  inputElement.classList.add(CSS_HIGHLIGHT_INVALID_INPUT);
   errorSpan.textContent = errorMessage;
-  errorSpan.classList.add("popup__input-error_active");
+  errorSpan.classList.add(CSS_SHOW_VALIDATION_MSG);
 }
 
 function hideInputError(inputElement) {
   const spanInputErrorID = getInputTypeErrID(inputElement);
   const errorSpan = document.querySelector(spanInputErrorID);
-  inputElement.classList.remove("popup__input_type_error");
+  inputElement.classList.remove(CSS_HIGHLIGHT_INVALID_INPUT);
   errorSpan.textContent = "";
-  errorSpan.classList.remove("popup__input-error_active");
+  errorSpan.classList.remove(CSS_SHOW_VALIDATION_MSG);
 }
 
 function addPopupValidationListeners(inputElements, submitButton) {
@@ -339,4 +368,4 @@ console.log("edit-profile-form: Cargar listeners a inputs");
 
 addPopupValidationListeners(editFormInputs, editSubmitButton);
 addPopupValidationListeners(newFormInputs, newSubmitButton);
-addPopupsListeners();
+addModalListeners();
