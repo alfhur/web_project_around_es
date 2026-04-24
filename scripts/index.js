@@ -105,6 +105,7 @@ function resetModal(form) {
   // Se desativa el boton submit
   const submitButton = form.querySelector(`.${CSS_SUBMIT_BUTTON}`);
   toggleButtonState(formInputs, submitButton);
+  // Talvez sólo era necesario ejecutar submitButton.disabled directamente
 }
 
 function handleModalKeys(evt) {
