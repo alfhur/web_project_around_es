@@ -1,5 +1,7 @@
 console.log("Script index.js conectado.");
 
+const popups = document.querySelectorAll(".popup");
+
 // Selección de elementos DOM para la gestión de la plantilla de tarjeta
 const cardsContainer = document.querySelector(".cards__list");
 const cardTemplate = document
@@ -87,6 +89,39 @@ function toggleButtonState(inputs, button) {
   button.disabled = !allValid;
 }
 
+function handlePopupClick(evt) {
+  /*
+  Paso 3. Cerrar la ventana emergente el hacer clic
+  en la superposición
+
+  Parámetros:
+    * evtcurrentTarget -> el popup completo (.popup)
+    * evt.target -> el elemento exacto donde se hace clic
+    * 
+  Si ambos son iguales, significa que se hizo clic en
+  el fonodo (overlay), no dentro del contenido.
+  */
+  console.log(`handlePopupClick(). target: ${evt.target}`);
+  if (evt.target === evt.currentTarget) {
+    console.log(`handlePopupClick(). Cerrando popup`);
+    closeModal(evt.currentTarget);
+  }
+}
+
+function addPopupsListeners() {
+  /*
+  Esta función se encarga de crear a todas las ventanas
+  emergentes (popups) los listeners necesarios para 
+  su funcionamiento:
+
+    * Clic del mouse para cerrar la venta en cualquier area.
+  */
+  popups.forEach((popup) => {
+    // Clic para cerrar con overlay
+    popup.addEventListener("click", handlePopupClick);
+  });
+}
+
 /**************************************************************************
  * Funciones generales: validación de datos de entrada
  *  - Verificar si un input o formulario es válido
@@ -118,19 +153,17 @@ function hideInputError(inputElement) {
 
 function addPopupValidationListeners(inputElements, submitButton) {
   inputElements.forEach(function (input) {
-    input.addEventListener("input", (inputX) => {
-      const input = inputX.currentTarget;
-
+    input.addEventListener("input", () => {
       // Se activa/desactiva el butón submit
       toggleButtonState(inputElements, submitButton);
 
       // Se valida el input y se muestra/oculta su mensaje de error
       if (input.validity.valid) {
-        let logMsg = `Validando input: ${input.name} -> OK: ocultar mensaje error.`;
+        let logMsg = `Validando input: ${input.name} -> OK.`;
         console.log(logMsg);
         hideInputError(input);
       } else {
-        let logMsg = `Validando input: ${input.name} -> Error: mostrar mensaje error.`;
+        let logMsg = `Validando input: ${input.name} -> Error.`;
         console.log(logMsg);
         showInputError(input, input.validationMessage);
       }
@@ -267,7 +300,7 @@ imageCloseButton.addEventListener("click", function () {
 });
 
 /**************************************************************************
- * Inicializar página
+ * Código para la inicialización de la página
  *************************************************************************/
 
 // Crear dinámicamente las tarjetas a mostrar a partir de los datos
@@ -280,56 +313,6 @@ initialCards.forEach(function (card) {
 // edit-profile-form: Inicializar (cargar) eventos de valización a los campos de captura
 console.log("edit-profile-form: Cargar listeners a inputs");
 
-// CÓDIGO ORIGNAL (BASADO EN LA LECCIÓN)
-/*
-editFormInputs.forEach(function (input) {
-  input.addEventListener("input", (input) => {
-    console.log("Validando input: " + input.name);
-    if (input.checkValidity) {
-      hideInputError(input);
-    } else {
-      showInputError(input, input.validationMessage);
-    }
-  });
-});
-*/
-
-/*
-// Unexpected token 
-editFormInputs.forEach(function (input.currentTarget) {
-  input.addEventListener("input", (input) => {
-    console.log("Validando input: " + input.name);
-    if (input.checkValidity) {
-      hideInputError(input);
-    } else {
-      showInputError(input, input.validationMessage);
-    }
-  });
-});
-*/
-
-/*
-editFormInputs.forEach(function (input) {
-  input.addEventListener("input", (inputX) => {
-    const input = inputX.currentTarget;
-
-    editSaveButton.disabled = true;
-
-    if (input.validity.valid) {
-      console.log(
-        "Validando input: " + input.name + " -> OK. ocultar mensaje de error.",
-      );
-      hideInputError(input);
-    } else {
-      console.log(
-        "Validando input: " +
-          input.name +
-          " -> Error: mostrar mensaje de error.",
-      );
-      showInputError(input, input.validationMessage);
-    }
-  });
-});
-*/
 addPopupValidationListeners(editFormInputs, editSubmitButton);
 addPopupValidationListeners(newFormInputs, newSubmitButton);
+addPopupsListeners();
