@@ -1,6 +1,7 @@
 console.log("Script index.js conectado.");
 
 const popups = document.querySelectorAll(".popup");
+const openPopupClass = "popup_is-opened";
 
 // Selección de elementos DOM para la gestión de la plantilla de tarjeta
 const cardsContainer = document.querySelector(".cards__list");
@@ -74,19 +75,22 @@ let initialCards = [
  * Funciones generales: abrir/cerrar popups (ventans modales)
  *************************************************************************/
 
-function openModal(form) {
-  console.log("openModal().Abriendo modal.");
-  form.classList.add("popup_is-opened");
-}
-
-function closeModal(form) {
-  console.log("closeModal(). Cerrando modal.");
-  form.classList.remove("popup_is-opened");
-}
-
 function toggleButtonState(inputs, button) {
   const allValid = Array.from(inputs).every((input) => input.validity.valid);
   button.disabled = !allValid;
+}
+
+function handlePopupKeys(evt) {
+  /*
+ Paso 4. Cerrar la ventana emergente pulsando Esc
+ */
+  if (evt.key === "Escape") {
+    // Recuperamos el popup (forma) abierta (la visible con la clase "popup_is-opened")
+    const openedForm = document.querySelector(`.${openPopupClass}`);
+    if (openedForm) {
+      closeModal(openedForm);
+    }
+  }
 }
 
 function handlePopupClick(evt) {
@@ -117,9 +121,29 @@ function addPopupsListeners() {
     * Clic del mouse para cerrar la venta en cualquier area.
   */
   popups.forEach((popup) => {
-    // Clic para cerrar con overlay
+    // Cerrar con clic con overlay
     popup.addEventListener("click", handlePopupClick);
   });
+}
+
+function openModal(form) {
+  console.log("openModal().Abriendo modal.");
+
+  // Se muestra el popup
+  form.classList.add(openPopupClass);
+
+  // Se agrega listener para cerrar el popup con la tecla Esc
+  document.addEventListener("keydown", handlePopupKeys);
+}
+
+function closeModal(form) {
+  console.log("closeModal(). Cerrando modal.");
+
+  // Se cierra (oculta) el popup
+  form.classList.remove(openPopupClass);
+
+  // Se elimina listener para cerrar el popup con la tecla Esc
+  document.removeEventListener("keydown", handlePopupKeys);
 }
 
 /**************************************************************************
