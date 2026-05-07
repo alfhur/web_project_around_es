@@ -8,6 +8,12 @@ Este proyecto representa la culminación de los sprints 8 y 9 de un curso de des
 
 Nota: Actualmente el proyecto funciona solo en el lado del cliente (frontend). Los datos se reinician al recargar la página.
 
+🚀 Funcionalidades Implementadas (Sprint 10)
+
+Este sprint se centra en la programación orientada a objetos mediante la sentencia class y en la programación modular utilizando las sentencias import y export.
+
+El proyecto fue actualizado y refactorizado para implementar los objetos Card y FormValidator. Además, el código dejó de concentrarse en un único archivo (index.js) y se reorganizó en módulos independientes, creando los archivos Card.js, FormValidator.js y Utils.js. Con esta estructura se logró una arquitectura más modular, organizada y fácil de mantener.
+
 
 🚀 Funcionalidades Implementadas (Sprint 9)
 
