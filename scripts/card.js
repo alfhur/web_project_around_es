@@ -1,5 +1,6 @@
+import PopupWithImage from "./popupwithimage.js";
 import {
-  openModal,
+  //  openModal,
   CSS_CARD,
   CSS_TITLE,
   CSS_IMAGE,
@@ -7,18 +8,18 @@ import {
   CSS_DELETE_BUTTON,
   CSS_DISPLAY_LIKE,
   CSS_IMAGE_DIV,
-  CSS_IMAGE_CAPTION,
-  CSS_IMAGE_IMAGE,
+  //  CSS_IMAGE_CAPTION,
+  //  CSS_IMAGE_IMAGE,
 } from "./utils.js";
 
-export class Card {
+export default class Card {
   constructor(data, templateSelector) {
     this._data = data;
     this._cardElement = this._getTemplate(templateSelector);
   }
 
   getCardElement() {
-    console.log("getCardElement(). Creando tarjeta: " + this._data.name);
+    console.log("Card.getCardElement(). Tarjeta: " + this._data.name);
 
     const cardElement = this._cardElement;
     const cardImage = cardElement.querySelector(CSS_IMAGE);
@@ -41,6 +42,7 @@ export class Card {
   }
 
   _setEventListeners() {
+    console.log("Card._setEventListeners()");
     const cardElement = this._cardElement;
     const cardImage = cardElement.querySelector(CSS_IMAGE);
     const cardLikeButton = cardElement.querySelector(CSS_LIKE_BUTTON);
@@ -50,38 +52,30 @@ export class Card {
       this._handleImageClick();
     });
 
-    cardLikeButton.addEventListener("click", () => {
-      this._handleLikeButtonClick();
+    cardLikeButton.addEventListener("click", (event) => {
+      this._handleLikeButtonClick(event);
     });
 
-    cardDeleteButton.addEventListener("click", () => {
-      this._handleDeleteButtonClick();
+    cardDeleteButton.addEventListener("click", (event) => {
+      this._handleDeleteButtonClick(event);
     });
   }
 
   _handleImageClick() {
-    console.log("Click botón 'Ver tarjeta'");
-    // Selección de elementos DOM del popup ver imágen ampliada
-    const imageSection = document.querySelector(CSS_IMAGE_DIV);
-    const imageName = imageSection.querySelector(CSS_IMAGE_CAPTION);
-    const imageElement = imageSection.querySelector(CSS_IMAGE_IMAGE);
-
-    imageName.textContent = name;
-    imageElement.src = this._data.link;
-    imageElement.alt = this._data.name;
-
-    openModal(imageSection);
+    console.log("Card._handleImageClick(). Click botón 'Ver tarjeta'");
+    const openImage = new PopupWithImage(CSS_IMAGE_DIV);
+    openImage.open(this._data.name, this._data.link);
   }
 
   _handleLikeButtonClick() {
-    console.log("Click botón 'Me gusta'");
+    console.log("Card._handleLikeButtonClick(). Click botón 'Me gusta'");
     const cardElement = this._cardElement;
     const cardLikeButton = cardElement.querySelector(CSS_LIKE_BUTTON);
     cardLikeButton.classList.toggle(CSS_DISPLAY_LIKE);
   }
 
   _handleDeleteButtonClick() {
-    console.log("Click botón 'Eliminar'");
+    console.log("Card._handleDeleteButtonClick(). Click botón 'Eliminar'");
     const cardElement = this._cardElement;
     cardElement.remove();
   }

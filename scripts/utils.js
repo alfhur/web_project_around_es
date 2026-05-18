@@ -10,6 +10,10 @@ export const CSS_INPUT_ERR_SUFIX = "-input-error";
 export const CSS_HIGHLIGHT_INVALID_INPUT = ".popup__input_type_error";
 export const CSS_DISPLAY_VALIDATION_MSG = "popup__input-error_active";
 
+// Declaraciones de clases CSS para el perfil
+export const CSS_PROFILE_TITLE = ".profile__title";
+export const CSS_PROFILE_DESCRIPTION = ".profile__description";
+
 // Declaraciones de clases CSS para las tarjetas
 export const CSS_CARD_CONTAINER = ".cards__list";
 export const CSS_CARD_TEMPLATE = "#card-template";
@@ -65,59 +69,4 @@ function resetModal(popup) {
       input.value = "";
     });
   }
-}
-
-function handleModalKeys(evt) {
-  /*
- Paso 4. Cerrar la ventana emergente pulsando Esc
- */
-  if (evt.key === "Escape") {
-    // Recuperamos el popup (forma) abierto (la visible con la clase "popup_is-opened")
-    const openedForm = document.querySelector(`.${CSS_DISPLAY_POPUP}`);
-    if (openedForm) {
-      closeModal(openedForm);
-    }
-  }
-}
-
-export function handleModalClick(evt) {
-  /*
-  Paso 3. Cerrar la ventana emergente el hacer clic
-  en la superposición
-
-  Parámetros:
-    * evtcurrentTarget -> el popup completo (.popup)
-    * evt.target -> el elemento exacto donde se hace clic
-    * 
-  Si ambos son iguales, significa que se hizo clic en
-  el fondo (overlay), no dentro del contenido.
-  */
-  console.log(`handleModalClick(). target: ${evt.target}`);
-  if (evt.target === evt.currentTarget) {
-    console.log(`handleModalClick(). Cerrando popup`);
-    closeModal(evt.currentTarget);
-  }
-}
-
-export function openModal(popup) {
-  console.log("openModal(). Abriendo modal.");
-
-  // Agregar listener para cerrar el popup con la tecla Esc
-  document.addEventListener("keydown", handleModalKeys);
-
-  // Abrir (mostrar) popup
-  popup.classList.add(CSS_DISPLAY_POPUP);
-}
-
-export function closeModal(popup) {
-  console.log("closeModal(). Cerrando modal.");
-
-  // Cerrar (ocultar) popup
-  popup.classList.remove(CSS_DISPLAY_POPUP);
-
-  // Eliminar listener para cerrar el popup con la tecla Esc
-  document.removeEventListener("keydown", handleModalKeys);
-
-  // Si el popup tiene una forma (captura datos), se limpian inputs
-  resetModal(popup);
 }

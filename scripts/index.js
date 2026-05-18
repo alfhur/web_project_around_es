@@ -1,15 +1,16 @@
 console.log("Script index.js conectado.");
-import { Card } from "./card.js";
-import { FormValidator } from "./formvalidator.js";
+import Section from "./section.js";
+import UserInfo from "./userinfo.js";
+import Card from "./card.js";
+import FormValidator from "./formvalidator.js";
 import {
-  openModal,
-  closeModal,
-  handleModalClick,
   CSS_POPUP_DIV,
   CSS_POPUP_FORM,
   CSS_CLOSE_BUTTON,
   CSS_SUBMIT_BUTTON,
   CSS_INPUT_ELEMENT,
+  CSS_PROFILE_TITLE,
+  CSS_PROFILE_DESCRIPTION,
   CSS_CARD_CONTAINER,
   CSS_CARD_TEMPLATE,
   CSS_EDIT_DIV,
@@ -27,9 +28,9 @@ const cardsContainer = document.querySelector(CSS_CARD_CONTAINER);
 const profileSection = document.querySelector(".profile");
 const profileAddButton = profileSection.querySelector(".profile__add-button");
 const profileEditButton = profileSection.querySelector(".profile__edit-button");
-const profileTitle = profileSection.querySelector(".profile__title");
+const profileTitle = profileSection.querySelector(CSS_PROFILE_TITLE);
 const profileDescription = profileSection.querySelector(
-  ".profile__description",
+  CSS_PROFILE_DESCRIPTION,
 );
 
 // Selección de elementos DOM del popup edición de perfil
@@ -57,38 +58,55 @@ let initialCards = [
     name: "Montañas Calvas",
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_bald-mountains.jpg",
   },
-  {
-    name: "Latemar",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_latemar.jpg",
-  },
-  {
-    name: "Parque Nacional de la Vanoise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_vanoise.jpg",
-  },
-  {
-    name: "Lago di Braies",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
-  },
+  // {
+  //   name: "Latemar",
+  //   link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_latemar.jpg",
+  // },
+  // {
+  //   name: "Parque Nacional de la Vanoise",
+  //   link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_vanoise.jpg",
+  // },
+  // {
+  //   name: "Lago di Braies",
+  //   link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
+  // },
 ];
 
 /**************************************************************************
  * Funciones generales: sin categoría
  *************************************************************************/
 
-function loadCards(initialCards) {
+function loadCards() {
   // Crea dinámicamente las tarjetas a mostrar a partir
   // de los datos en el array initialCards
-  initialCards.forEach(function (cardData) {
-    console.log(
-      "loadCards() -> Card name: " +
-        cardData.name +
-        ", Card link: " +
-        cardData.link,
-    );
-    renderCard(cardData, cardsContainer);
-    // const newCard = new Card(cardData, CSS_CARD_TEMPLATE);
-    // cardsContainer.prepend(newCard.getCardElement());
-  });
+  // initialCards.forEach(function (cardData) {
+  //   console.log(
+  //     "loadCards() -> Card name: " +
+  //       cardData.name +
+  //       ", Card link: " +
+  //       cardData.link,
+  //   );
+  //   renderCard(cardData, cardsContainer);
+  // const newCard = new Card(cardData, CSS_CARD_TEMPLATE);
+  // cardsContainer.prepend(newCard.getCardElement());
+
+  // const section = new Section({ <items>, <renderer> }, >sectionSelector>);
+  // const cardSection = new Section(
+  //   { items: initialCards, renderer: (cardData) => renderCard(cardData) },
+  //   CSS_CARD_CONTAINER,
+  // );
+  const cardSection = new Section(
+    {
+      items: initialCards,
+      renderer: (cardData) => {
+        const newCard = new Card(cardData, CSS_CARD_TEMPLATE);
+        const newCardElement = newCard.getCardElement();
+        cardSection.addItem(newCardElement);
+      },
+    },
+    CSS_CARD_CONTAINER,
+  );
+  cardSection.renderer();
 }
 
 function initModals() {
@@ -185,17 +203,6 @@ editForm.addEventListener("submit", handleProfileFormSubmit);
  * Funciones para la creación de tarjetas a través del popup de creación de tarjeta
  *************************************************************************/
 
-function renderCard(cardData, cardContainer) {
-  console.log(
-    "renderCard() - > Card name: " +
-      cardData.name +
-      ", Card link: " +
-      cardData.link,
-  );
-  const newCard = new Card(cardData, CSS_CARD_TEMPLATE);
-  cardContainer.prepend(newCard.getCardElement());
-}
-
 function handleCardFormSubmit(evt) {
   console.log("handleCardFormSubmit(). Guardando nueva tarjeta.");
   evt.preventDefault();
@@ -213,7 +220,14 @@ function handleCardFormSubmit(evt) {
 newForm.addEventListener("submit", handleCardFormSubmit);
 
 // Crear y mostrar las tarjetas iniciales
-loadCards(initialCards);
+loadCards();
 
 // Inicializar las ventanas modales
-initModals();
+//initModals();
+
+const userInfo = new UserInfo({
+  nameSelector: CSS_PROFILE_TITLE,
+  descriptionSelector: CSS_PROFILE_DESCRIPTION,
+});
+const ui = userInfo.getUserInfo();
+console.log(ui);

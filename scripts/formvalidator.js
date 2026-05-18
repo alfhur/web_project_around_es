@@ -6,7 +6,7 @@ import {
   CSS_INPUT_ERR_SUFIX,
 } from "./utils.js";
 
-export class FormValidator {
+export default class FormValidator {
   constructor(selectors, popup) {
     this._selectors = selectors;
     this._popup = popup;
