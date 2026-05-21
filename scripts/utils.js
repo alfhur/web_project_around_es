@@ -38,35 +38,3 @@ export const CSS_EDIT_DESCRIPTION = ".popup__input_type_description";
 export const CSS_NEW_DIV = "#new-card-popup";
 export const CSS_NEW_NAME = ".popup__input_type_card-name";
 export const CSS_NEW_LINK = ".popup__input_type_url";
-
-/**************************************************************************
- * Funciones generales: abrir/cerrar popups (ventans modales)
- *************************************************************************/
-
-function resetModal(popup) {
-  /*
-  Extra del Proyecto 9: Recomendación: Restablecer la validación de formularios
-  Se limpian inputs y mensajes de validación cotenidos en la forma
-  */
-
-  const formInputs = popup.querySelectorAll(CSS_INPUT_ELEMENT);
-
-  if (formInputs.length > 0) {
-    // Se desactiva el boton submit
-    const submitButton = popup.querySelector(CSS_SUBMIT_BUTTON);
-    //toggleButtonState(formInputs, submitButton);
-    submitButton.disabled = true;
-
-    // Se inicializan spans para los mensajes de validación de los inputs
-    const formInputErrors = popup.querySelectorAll(CSS_INPUT_ERR_ELEMENT);
-    formInputErrors.forEach((errorSpan) => {
-      errorSpan.textContent = "";
-      errorSpan.classList.remove(CSS_DISPLAY_VALIDATION_MSG);
-    });
-
-    // Se inicializan inputs
-    formInputs.forEach((input) => {
-      input.value = "";
-    });
-  }
-}

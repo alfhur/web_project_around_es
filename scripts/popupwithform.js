@@ -1,37 +1,59 @@
 import Popup from "./popup.js";
-import { CSS_INPUT_ELEMENT } from "./utils.ja";
+import FormValidator from "./formvalidator.js";
+import {
+  CSS_POPUP_FORM,
+  CSS_INPUT_ELEMENT,
+  CSS_SUBMIT_BUTTON,
+} from "./utils.js";
 
-export default class PopupWithForm extends Card {
+export default class PopupWithForm extends Popup {
+  #formValidator;
+
   constructor(popupSelector, submitCallback) {
     super(popupSelector);
+    this._form = this._popup.querySelector(CSS_POPUP_FORM);
     this._handleSubmit = submitCallback;
   }
 
   close() {
     console.log(`PopupWithForm.close(). modal: ${this._selector}`);
     super.close();
-    //this._popup.removeEventListener("submit");
-    this._popup.reset();
+    this._form.reset();
+    this.#formValidator.hideInputErrors();
   }
 
   setEventListeners() {
     console.log(`PopupWithForm.setEventListeners(). modal: ${this._selector}`);
     super.setEventListeners();
-    this._popup.addEventListener("submit", (event) => {
-      this._handleSubmit(event);
+
+    // Listener para el botón submit con la función de callback recibida en el constructor
+    this._form.addEventListener("submit", (evt) => {
+      evt.preventDefault();
+      this._handleSubmit(this._getInputValues());
+      this._form.reset();
+      this.close();
     });
-    // ¿evento click icono cerrar? -> está en la clase super
+
+    // Listener para el botón X-Cerrar
+    // Agregado en super.setEventListener
+
+    // Listener para la validación de los campos de captura del formulario
+    const popupSelectors = {
+      css_input_element: CSS_INPUT_ELEMENT,
+      css_submit_button: CSS_SUBMIT_BUTTON,
+    };
+    this.#formValidator = new FormValidator(popupSelectors, this._selector);
+    this.#formValidator.setEventListeners();
   }
 
   _getInputValues() {
     console.log(`PopupWithForm._getInputValues(). modal: ${this._selector}`);
-    const inputs = this._popup.querySelectorAll(CSS_INPUT_ELEMENT);
+    const inputs = this._form.querySelectorAll(CSS_INPUT_ELEMENT);
     const inputValues = {};
-    inputs.foreach((input) => {
+    inputs.forEach((input) => {
       inputValues[input.name] = input.value;
     });
-    // ¿y luego que se hacen con los datos?
-    console.log(`PopupWithForm._getInputValues(). values: ${inputValues}`);
+    console.log(`   PopupWithForm._getInputValues(). values: ${inputValues}`);
     return inputValues;
   }
 }

@@ -1,30 +1,47 @@
 import {
-  CSS_INPUT_ELEMENT,
-  CSS_SUBMIT_BUTTON,
   CSS_HIGHLIGHT_INVALID_INPUT,
   CSS_DISPLAY_VALIDATION_MSG,
   CSS_INPUT_ERR_SUFIX,
 } from "./utils.js";
 
 export default class FormValidator {
-  constructor(selectors, popup) {
+  constructor(selectors, popupSelector) {
     this._selectors = selectors;
-    this._popup = popup;
+    this._form = document.querySelector(popupSelector);
   }
 
   setEventListeners() {
-    const inputs = this._popup.querySelectorAll(
+    console.log(`FormValidator.setEventListeners(). modal: ${this._form}`);
+    const inputs = this._form.querySelectorAll(
       this._selectors.css_input_element,
     );
-    const submitButton = this._popup.querySelector(
+    const submitButton = this._form.querySelector(
       this._selectors.css_submit_button,
     );
     if (inputs.length > 0) {
-      console.log(`  Agregando listener validar captura de datos`);
       this._addModalValidationListeners(inputs, submitButton);
     } else {
       console.log(`  Popup de consulta (sin captura de datos)`);
     }
+  }
+
+  hideInputErrors() {
+    /*
+  Extra del Proyecto 9: Recomendación: Restablecer la validación de formularios
+  Se limpian inputs y mensajes de validación cotenidos en la forma
+  */
+
+    // Se desactiva el boton submit
+    const submitButton = this._form.querySelector(
+      this._selectors.css_submit_button,
+    );
+    submitButton.disabled = true;
+
+    // Se inicializan spans para los mensajes de validación de los inputs
+    const inputs = this._form.querySelectorAll(
+      this._selectors.css_input_element,
+    );
+    inputs.forEach((input) => this._hideInputError(input));
   }
 
   /**************************************************************************
@@ -69,6 +86,9 @@ export default class FormValidator {
   _addModalValidationListeners(inputElements, submitButton) {
     // Agrega el listener de validación a cada elemento input en inputElements
     inputElements.forEach((input) => {
+      console.log(
+        `  FormValidator._addModalValidationListeners(). Agregando listeners de validación para ${input.name}`,
+      );
       input.addEventListener("input", () => {
         this._validateInput(input, inputElements, submitButton);
       });
