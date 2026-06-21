@@ -2,11 +2,13 @@ import Popup from "./popup.js";
 import { CSS_IMAGE_CAPTION, CSS_IMAGE_IMAGE } from "./utils.js";
 
 export default class PopupWithImage extends Popup {
-  // constructor(popupSelector) {
+  // constructor(data, popupSelector) {
   //   super(popupSelector);
-  //   this.close = this.close.bind(this);
+  //   this.#name = data.name;
+  //   this.#link = data.link;
   // }
-  open(data) {
+
+  open({ name, link }) {
     console.log(`PopupWithImage.open(). modal: ${this._selector}`);
 
     // Selección de elementos DOM del popup ver imágen ampliada
@@ -14,9 +16,9 @@ export default class PopupWithImage extends Popup {
     const imageElement = this._popup.querySelector(CSS_IMAGE_IMAGE);
 
     // Asignación de los datos recibidos en el parámetro a los elementos DOM
-    imageName.textContent = data.name;
-    imageElement.src = data.link;
-    imageElement.alt = data.name;
+    imageName.textContent = name;
+    imageElement.src = link;
+    imageElement.alt = name;
 
     super.open();
   }

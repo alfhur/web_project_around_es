@@ -1,10 +1,12 @@
 export default class UserInfo {
   #nameElement;
   #descriptionElement;
+  #imageElement;
 
-  constructor(nameSelector, descriptionSelector) {
-    this.#nameElement = document.querySelector(nameSelector);
-    this.#descriptionElement = document.querySelector(descriptionSelector);
+  constructor(selectors) {
+    this.#nameElement = document.querySelector(selectors.name);
+    this.#descriptionElement = document.querySelector(selectors.about);
+    this.#imageElement = document.querySelector(selectors.avatar);
   }
 
   getUserInfo() {
@@ -12,13 +14,15 @@ export default class UserInfo {
     // los que es necesario mostrar los datos del usuario en el formulario abierto
     return {
       name: this.#nameElement.textContent,
-      description: this.#descriptionElement.textContent,
+      about: this.#descriptionElement.textContent,
+      avatar: this.#imageElement.scr,
     };
   }
 
-  setUserInfo({ name, description }) {
+  setUserInfo({ name, about, avatar }) {
     // Toma los datos del nuevo usuario y los agrega en la página
     this.#nameElement.textContent = name;
-    this.#descriptionElement.textContent = description;
+    this.#descriptionElement.textContent = about;
+    this.#imageElement.src = avatar;
   }
 }
