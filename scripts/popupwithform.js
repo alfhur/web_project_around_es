@@ -26,12 +26,21 @@ export default class PopupWithForm extends Popup {
     console.log(`PopupWithForm.setEventListeners(). modal: ${this._selector}`);
     super.setEventListeners();
 
+    const submitButton = this._form.querySelector(CSS_SUBMIT_BUTTON);
+
     // Listener para el botón submit con la función de callback recibida en el constructor
-    this._form.addEventListener("submit", (evt) => {
+    this._form.addEventListener("submit", async (evt) => {
       evt.preventDefault();
+
+      const textoOriginalSubmitButton = submitButton.textContent;
+      submitButton.textContent = "Guardando...";
+
       this._handleSubmit(this._getInputValues());
-      this._form.reset();
+      await this.#esperar(600);
+
       this.close();
+      this._form.reset();
+      submitButton.textContent = textoOriginalSubmitButton;
     });
 
     // Listener para el botón X-Cerrar
@@ -51,9 +60,17 @@ export default class PopupWithForm extends Popup {
     const inputs = this._form.querySelectorAll(CSS_INPUT_ELEMENT);
     const inputValues = {};
     inputs.forEach((input) => {
-      inputValues[input.name] = input.value;
+      inputValues[input.name] = input.value.trim();
     });
-    console.log(`   PopupWithForm._getInputValues(). values: ${inputValues}`);
+    console.log(
+      `   PopupWithForm._getInputValues(). values: ${JSON.stringify(inputValues)}`,
+    );
     return inputValues;
+  }
+
+  #esperar(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
   }
 }

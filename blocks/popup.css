@@ -141,6 +141,10 @@
   margin: 0;
 }
 
+.popup__content_confirmation {
+  min-height: auto;
+}
+
 @media screen and (max-width: 544px) {
   .popup {
     bottom: 112px;
