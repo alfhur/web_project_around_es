@@ -84,17 +84,4 @@ export default class Card {
       this._handleDeleteButtonClick(this);
     });
   }
-
-  // _handleLikeButtonClick() {
-  //   console.log("Card._handleLikeButtonClick(). Click botón 'Like'");
-  //   const cardElement = this._cardElement;
-  //   const cardLikeButton = cardElement.querySelector(CSS_LIKE_BUTTON);
-  //   cardLikeButton.classList.toggle(CSS_DISPLAY_LIKE);
-  // }
-
-  // _handleDeleteButtonClick() {
-  //   console.log("Card._handleDeleteButtonClick(). Click botón 'Eliminar'");
-  //   const cardElement = this._cardElement;
-  //   cardElement.remove();
-  // }
 }

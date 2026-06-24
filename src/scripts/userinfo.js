@@ -15,7 +15,7 @@ export default class UserInfo {
     return {
       name: this.#nameElement.textContent,
       about: this.#descriptionElement.textContent,
-      avatar: this.#imageElement.scr,
+      avatar: this.#imageElement.src,
     };
   }
 

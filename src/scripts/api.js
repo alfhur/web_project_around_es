@@ -98,7 +98,7 @@ export default class Api {
    * OTROS MÉTODOS WEBAPI SIN CATEGORÍA
    **************************************************************/
 
-  getProfileAndCards() {
+  getInicialCards() {
     return Promise.all([this.getProfile(), this.getCards()]);
   }
 }

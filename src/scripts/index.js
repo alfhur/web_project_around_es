@@ -34,7 +34,6 @@ const profileEditAvatarButton = profileSection.querySelector(
 const editSection = document.querySelector(CSS_EDIT_POPUP);
 const editNameInput = editSection.querySelector(CSS_EDIT_NAME);
 const editDescriptionInput = editSection.querySelector(CSS_EDIT_DESCRIPTION);
-
 let cardSection;
 
 /**************************************************************************
@@ -92,11 +91,8 @@ const deleteCardSubmitCallback = (card) => {
     .then(() => {
       card.delete();
     })
-    .catch((err) => {
-      console.log(
-        "ERROR al registrar tarjeta. index.newCardSubmitCallback() -> ",
-        err,
-      );
+    .catch((res) => {
+      console.log(`ERROR: ${res.status}`);
     });
 };
 
@@ -126,11 +122,8 @@ const likeCardCallback = (card) => {
   api
     .likeCard(card.id, !card.isLiked)
     .then(() => card.like())
-    .catch((err) => {
-      console.log(
-        "ERROR al registrar tarjeta. index.newCardSubmitCallback() -> ",
-        err,
-      );
+    .catch((res) => {
+      console.log(`ERROR: ${res.status}`);
     });
 };
 
@@ -145,13 +138,8 @@ const newCardSubmitCallback = (submitedData) => {
     .then((serverData) => {
       renderNewCardCallback(serverData);
     })
-    .catch((err) => {
-      console.log(
-        console.log(
-          "ERROR al registrar tarjeta. index.newCardSubmitCallback() -> ",
-          err,
-        ),
-      );
+    .catch((res) => {
+      console.log(`ERROR: ${res.status}`);
     });
 };
 
@@ -166,12 +154,9 @@ const editProfileSubmitCallback = (submitedData) => {
   api
     .updateProfile(apiData)
     .then((serverData) => userProfile.setUserInfo(serverData))
-    .catch((err) =>
-      console.log(
-        "ERROR al actualizar perfil. index.editProfileSubmitCallback() -> ",
-        err,
-      ),
-    );
+    .catch((res) => {
+      console.log(`ERROR: ${res.status}`);
+    });
 };
 
 const editProfileModal = new PopupWithForm(
@@ -190,13 +175,8 @@ const editAvatarSubmitCallback = (submitedData) => {
     .then((serverData) => {
       userProfile.setUserInfo(serverData);
     })
-    .catch((err) => {
-      console.log(
-        console.log(
-          "ERROR al registrar tarjeta. index.editAvatarSubmitCallback() -> ",
-          err,
-        ),
-      );
+    .catch((res) => {
+      console.log(`ERROR: ${res.status}`);
     });
 };
 
@@ -262,7 +242,7 @@ confirmCardDeleteModal.setEventListeners();
 
 // Cargar la infomación desde el servidor y renderizarla
 api
-  .getProfileAndCards()
+  .getInicialCards()
   .then((data) => {
     // Recuperar la información del usuario obtenida
     // del servidor y actualizarla en la página.
@@ -272,9 +252,6 @@ api
     // obtenida del servidor y renderizarlas en la página.
     renderCards(data[1]);
   })
-  .catch((err) => {
-    console.log(
-      "ERROR al recuperar información del usuario y las tarjetas: ",
-      err,
-    );
+  .catch((res) => {
+    console.log(`ERROR: ${res.status}`);
   });
