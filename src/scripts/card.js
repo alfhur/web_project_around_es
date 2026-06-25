@@ -15,6 +15,7 @@ export default class Card {
     openImagePopupCallback,
     deleteButtonCallBack,
     likeButtonCallback,
+    renderDeleteButton,
   ) {
     this.id = data._id;
     this.name = data.name;
@@ -24,6 +25,7 @@ export default class Card {
     this._handleCardClick = openImagePopupCallback;
     this._handleLikeButtonClick = likeButtonCallback;
     this._handleDeleteButtonClick = deleteButtonCallBack;
+    this._renderDeleteButton = renderDeleteButton;
   }
 
   like() {
@@ -36,14 +38,19 @@ export default class Card {
     const cardElement = this._cardElement;
     const cardImage = cardElement.querySelector(CSS_IMAGE);
     const cardTitle = cardElement.querySelector(CSS_TITLE);
+    const cardDeleteButton = cardElement.querySelector(CSS_DELETE_BUTTON);
 
     cardImage.src = this.link;
     cardImage.alt = this.name;
     cardTitle.textContent = this.name;
+
     if (this.isLiked) {
-      this.like();
+      this.like();|
     }
 
+    if (!this._renderDeleteButton) {
+      cardDeleteButton.remove();
+    }
     this._setEventListeners();
 
     return cardElement;
@@ -65,7 +72,6 @@ export default class Card {
     const cardElement = this._cardElement;
     const cardImage = cardElement.querySelector(CSS_IMAGE);
     const cardLikeButton = cardElement.querySelector(CSS_LIKE_BUTTON);
-    const cardDeleteButton = cardElement.querySelector(CSS_DELETE_BUTTON);
 
     cardImage.addEventListener("click", () => {
       this._handleCardClick(this);
@@ -75,8 +81,11 @@ export default class Card {
       this._handleLikeButtonClick(this);
     });
 
-    cardDeleteButton.addEventListener("click", () => {
-      this._handleDeleteButtonClick(this);
-    });
+    if (this._renderDeleteButton) {
+      const cardDeleteButton = cardElement.querySelector(CSS_DELETE_BUTTON);
+      cardDeleteButton.addEventListener("click", () => {
+        this._handleDeleteButtonClick(this);
+      });
+    }
   }
 }

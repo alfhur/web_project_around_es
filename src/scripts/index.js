@@ -60,6 +60,7 @@ const renderNewCardCallback = (cardData) => {
     openImagePopupCallback,
     openConfirmDeletePopupCallback,
     likeCardCallback,
+    cardData.owner === userProfile.id(),
   );
   const newCardElement = newCard.getCardElement();
   cardSection.addItem(newCardElement);
