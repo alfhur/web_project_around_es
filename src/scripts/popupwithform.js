@@ -16,14 +16,12 @@ export default class PopupWithForm extends Popup {
   }
 
   close() {
-    console.log(`PopupWithForm.close(). modal: ${this._selector}`);
     super.close();
     this._form.reset();
     this.#formValidator.hideInputErrors();
   }
 
   setEventListeners() {
-    console.log(`PopupWithForm.setEventListeners(). modal: ${this._selector}`);
     super.setEventListeners();
 
     const submitButton = this._form.querySelector(CSS_SUBMIT_BUTTON);
@@ -55,15 +53,11 @@ export default class PopupWithForm extends Popup {
   }
 
   _getInputValues() {
-    console.log(`PopupWithForm._getInputValues(). modal: ${this._selector}`);
     const inputs = this._form.querySelectorAll(CSS_INPUT_ELEMENT);
     const inputValues = {};
     inputs.forEach((input) => {
       inputValues[input.name] = input.value.trim();
     });
-    console.log(
-      `   PopupWithForm._getInputValues(). values: ${JSON.stringify(inputValues)}`,
-    );
     return inputValues;
   }
 }

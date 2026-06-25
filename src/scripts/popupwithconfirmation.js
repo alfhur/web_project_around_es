@@ -9,15 +9,11 @@ export default class PopupWithConfirmation extends Popup {
   }
 
   open(objectReference) {
-    console.log(`PopupWithConfirmation.open(). modal: ${this._selector}`);
     super.open();
     this._objectReference = objectReference;
   }
 
   setEventListeners() {
-    console.log(
-      `PopupWithConfirmation.setEventListeners(). modal: ${this._selector}`,
-    );
     super.setEventListeners();
 
     // Listener para el botón submit con la función de callback recibida en el constructor

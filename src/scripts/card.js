@@ -27,15 +27,12 @@ export default class Card {
   }
 
   like() {
-    console.log("Card.like().");
     const cardElement = this._cardElement;
     const cardLikeButton = cardElement.querySelector(CSS_LIKE_BUTTON);
     cardLikeButton.classList.toggle(CSS_DISPLAY_LIKE);
   }
 
   getCardElement() {
-    console.log("Card.getCardElement(). Tarjeta: " + this.name);
-
     const cardElement = this._cardElement;
     const cardImage = cardElement.querySelector(CSS_IMAGE);
     const cardTitle = cardElement.querySelector(CSS_TITLE);
@@ -53,7 +50,6 @@ export default class Card {
   }
 
   delete() {
-    console.log(`Card.delete(). Eliminar tarjeta ${this.name}`);
     const cardElement = this._cardElement;
     cardElement.remove();
   }
@@ -66,7 +62,6 @@ export default class Card {
   }
 
   _setEventListeners() {
-    console.log("Card._setEventListeners()");
     const cardElement = this._cardElement;
     const cardImage = cardElement.querySelector(CSS_IMAGE);
     const cardLikeButton = cardElement.querySelector(CSS_LIKE_BUTTON);

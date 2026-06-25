@@ -11,7 +11,6 @@ export default class FormValidator {
   }
 
   setEventListeners() {
-    console.log(`FormValidator.setEventListeners(). modal: ${this._form}`);
     const inputs = this._form.querySelectorAll(
       this._selectors.css_input_element,
     );
@@ -86,9 +85,6 @@ export default class FormValidator {
   _addModalValidationListeners(inputElements, submitButton) {
     // Agrega el listener de validación a cada elemento input en inputElements
     inputElements.forEach((input) => {
-      console.log(
-        `  FormValidator._addModalValidationListeners(). Agregando listeners de validación para ${input.name}`,
-      );
       input.addEventListener("input", () => {
         this._validateInput(input, inputElements, submitButton);
       });
@@ -101,12 +97,8 @@ export default class FormValidator {
 
     // Se valida el input y se muestra/oculta su mensaje de error
     if (input.validity.valid) {
-      let logMsg = `Validando input: ${input.name} -> OK.`;
-      console.log(logMsg);
       this._hideInputError(input);
     } else {
-      let logMsg = `Validando input: ${input.inputElement} -> Error.`;
-      console.log(logMsg);
       this._showInputError(input, input.validationMessage);
     }
   }
