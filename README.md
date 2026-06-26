@@ -4,6 +4,8 @@
 
 "Alrededor de los EE. UU." es una página web interactiva que funciona como una galería de imágenes, donde los usuarios pueden agregar fotos, eliminarlas y darles me gusta.
 
+![Animación de la funcionalidad del proyecto](./animacion.gif)
+
 Este proyecto ha sido desarrollado durante los sprints del curso de desarrollo Web Fullstack. Partiendo de un layout estático (HTML/CSS) provisto como base, se le ha ido agregnado "vida" a la página utilizando JavaScript puro, implementando toda la lógica de interacción, la manipulación dinámica del DOM, la validación de formularios y llamadas WebAPI con un servidor para guardar y recuperar las imágenes en la galería.
 
 🛠️ Tecnologías Utilizadas
