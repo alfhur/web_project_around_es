@@ -13,31 +13,29 @@ export default class PopupWithForm extends Popup {
     super(popupSelector);
     this._form = this._popup.querySelector(CSS_POPUP_FORM);
     this._handleSubmit = submitCallback;
+    this.saveButton = this._form.querySelector(CSS_SUBMIT_BUTTON);
+  }
+
+  saveButton() {
+    return this.saveButton;
   }
 
   close() {
     super.close();
     this._form.reset();
     this.#formValidator.hideInputErrors();
+    this.saveButton.textContent = "Guardar";
   }
 
   setEventListeners() {
     super.setEventListeners();
 
-    const submitButton = this._form.querySelector(CSS_SUBMIT_BUTTON);
-
     // Listener para el botón submit con la función de callback recibida en el constructor
     this._form.addEventListener("submit", (evt) => {
       evt.preventDefault();
 
-      const textoOriginalSubmitButton = submitButton.textContent;
-      submitButton.textContent = "Guardando...";
-
+      this.saveButton.textContent = "Guardando...";
       this._handleSubmit(this._getInputValues());
-
-      this.close();
-      this._form.reset();
-      submitButton.textContent = textoOriginalSubmitButton;
     });
 
     // Listener para el botón X-Cerrar

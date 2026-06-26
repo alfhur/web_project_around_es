@@ -141,6 +141,9 @@ const newCardSubmitCallback = (submitedData) => {
     })
     .catch((res) => {
       console.log(`ERROR: ${res.status}`);
+    })
+    .finally(() => {
+      newCardModal.close();
     });
 };
 
@@ -157,6 +160,9 @@ const editProfileSubmitCallback = (submitedData) => {
     .then((serverData) => userProfile.setUserInfo(serverData))
     .catch((res) => {
       console.log(`ERROR: ${res.status}`);
+    })
+    .finally(() => {
+      editProfileModal.close();
     });
 };
 
@@ -178,6 +184,9 @@ const editAvatarSubmitCallback = (submitedData) => {
     })
     .catch((res) => {
       console.log(`ERROR: ${res.status}`);
+    })
+    .finally(() => {
+      editAvatarModal.close();
     });
 };
 

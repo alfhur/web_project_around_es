@@ -45,7 +45,7 @@ export default class Card {
     cardTitle.textContent = this.name;
 
     if (this.isLiked) {
-      this.like();|
+      this.like();
     }
 
     if (!this._renderDeleteButton) {
